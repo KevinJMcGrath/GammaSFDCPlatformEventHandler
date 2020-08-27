@@ -16,4 +16,7 @@ with open(config_path, 'r') as _config_file:
 HeartbeatDelay = _config['heartbeat_delay']
 SFDCPlatformConfig = _config['sfdc_platform']
 SymphonyTenantConfig = _config['sym_tenant']
+DatabaseConfig = _config['databse']
+
+
 LogVerbose = _config['log_verbose']

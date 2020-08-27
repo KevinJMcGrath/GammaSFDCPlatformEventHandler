@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 
 class Tenant:
     def __init__(self):

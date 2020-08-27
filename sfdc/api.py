@@ -19,7 +19,3 @@ def report_error(ssentry_id: str, err_msg: str):
     }
 
     SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)
-
-
-def report_system_error(err_msg: str):
-    pass

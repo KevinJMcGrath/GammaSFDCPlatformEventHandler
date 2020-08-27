@@ -1,4 +1,6 @@
 aiosfstream ~= 0.5.0
+dnspython ~= 2.0.0
 jsonpickle ~= 1.4.1
+pymongo ~= 3.11.0
 requests ~= 2.24.0
 simple-salesforce ~= 1.10.1

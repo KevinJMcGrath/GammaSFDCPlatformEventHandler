@@ -1,9 +1,49 @@
-# IDE files
-.idea
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-# pycache
-__pycache__
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyCharm
+.idea/
+
+# config
+config.json
+config.*.json
 
 # Secrets
-config.json
+*.pem
+*.crt
+*.pkcs8
 
+# Logging
+log/
+logs/
+.log
+
+# Data
+data/
+*.csv
+*.txt
