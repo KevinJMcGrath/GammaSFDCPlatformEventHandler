@@ -1,9 +1,10 @@
 import asyncio
 
-import heartbeat
 import sfdc
 
-tenant_queue = asyncio.Queue()
+from server import heartbeat
+
+platform_event_queue = asyncio.Queue()
 
 async def gather_coroutines():
     await asyncio.gather(
