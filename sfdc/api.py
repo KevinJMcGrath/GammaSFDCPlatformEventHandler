@@ -1,4 +1,6 @@
-from . import SalesforceClient
+import logging
+
+import sfdc
 
 def report_status(ssentry_id: str, status: str):
     rest_path = '/symphony/sse-status'
@@ -7,7 +9,8 @@ def report_status(ssentry_id: str, status: str):
         "status": status
     }
 
-    SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)
+    logging.debug(f"Sending status update to SFDC. SSEntryId: {ssentry_id} - status: {status}")
+    sfdc.SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)
 
 
 def report_error(ssentry_id: str, err_msg: str):
@@ -18,4 +21,5 @@ def report_error(ssentry_id: str, err_msg: str):
         "message": err_msg
     }
 
-    SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)
+    logging.debug(f"Sending error to SFDC. SSEntryId: {ssentry_id} - error: {err_msg}")
+    sfdc.SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)

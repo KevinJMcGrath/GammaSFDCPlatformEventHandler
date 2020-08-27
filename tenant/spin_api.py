@@ -19,6 +19,7 @@ def create_tenant(tenant_id: str=None):
         resp = requests.post(endpoint, data=payload)
 
         if resp.status_code < 300:
+            logging.debug(f"Spinnaker create request successful.")
             success = True
         else:
             resp.raise_for_status()
@@ -44,6 +45,7 @@ def destroy_tenant(tenant_id: str):
         resp = requests.post(endpoint, data=payload)
 
         if resp.status_code < 300:
+            logging.debug(f"Spinnaker delete request successful.")
             success = True
         else:
             resp.raise_for_status()

@@ -2,7 +2,7 @@ import dns
 import logging
 import pymongo
 
-from . import BuildStatus
+from db.utility import BuildStatus
 
 import config
 
@@ -38,6 +38,7 @@ class MongoClient:
         return db.get_collection(self.tenant_id_collection_name)
 
     def get_tenant_status(self, tenant_id: str):
+        logging.debug(f"get_tenant_status tenant_id: {tenant_id}")
         return self.get_collection(self.tenant_id_collection_name).find_one(
             {
                 "tenant_id": {
@@ -47,6 +48,7 @@ class MongoClient:
         )
 
     def get_pending_tenants(self):
+        logging.debug('get_pending_tenants')
         return self.get_collection(self.tenant_id_collection_name).find(
             {
                 "$or": [
@@ -57,9 +59,11 @@ class MongoClient:
         )
 
     def insert_new_tenant(self, tenant_id: str):
+        logging.debug(f"insert_new_tenant tenant_id: {tenant_id}")
         self.insert_tenant_status(tenant_id)
 
     def insert_tenant_status(self, tenant_id: str, status: BuildStatus=BuildStatus.Pending):
+        logging.debug(f"insert_tenant_status tenant_id: {tenant_id} - status: {status.name}")
         self.get_collection(self.tenant_id_collection_name).insert_one(
             {
                 "tenant_id": tenant_id,
@@ -68,6 +72,7 @@ class MongoClient:
         )
 
     def update_tenant_status(self, tenant_id: str, status: BuildStatus):
+        logging.debug(f"update_tenant_status tenant_id: {tenant_id} - status: {status.name}")
         self.get_collection(self.tenant_id_collection_name).find_one_and_update(
             {
                 "tenant_id": tenant_id

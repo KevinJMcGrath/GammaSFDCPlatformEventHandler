@@ -1,9 +1,9 @@
 import config
 
 
-from . import api
-from .apex_client import SFClient
-from .events_client import EventsClient
+from sfdc import api
+from sfdc.apex_client import SFClient
+from sfdc.events_client import EventsClient
 
 
 PEListenerClient = EventsClient(config.SFDCPlatformConfig)

@@ -1,12 +1,6 @@
-from enum import Enum
+from db.client import MongoClient
+from db.utility import BuildStatus
 
-from .client import MongoClient
-
-class BuildStatus(Enum):
-    Pending = 0
-    InProgress = 1
-    Complete = 2
-    Failed = 3
 
 DBClient = MongoClient.from_config()
 

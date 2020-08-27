@@ -5,11 +5,11 @@ from tenant import processor
 
 async def process_events(async_queue: asyncio.Queue):
     while True:
-        tenant_event = await async_queue.get()
+        tenant_event: tenant.TenantEvent = await async_queue.get()
 
-        if isinstance(tenant_event, tenant.TenantCreateEvent):
-            pass
-
-
-def process_event_create_tenant(tenant_event: tenant.TenantCreateEvent):
-    processor.create_tenant(tenant_event=tenant_event)
+        if tenant_event.type == 'create':
+            processor.create_tenant(tenant_event=tenant_event)
+        elif tenant_event.type == 'status':
+            processor.status_check(tenant_event)
+        elif tenant_event.type == 'delete':
+            processor.delete_tenant(tenant_event)

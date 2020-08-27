@@ -3,7 +3,7 @@ import logging
 
 import sfdc
 
-from models.tenant import TenantCreateEvent
+from models.tenant import TenantEvent
 
 # asyncio examples
     # Intro Guide: https://faculty.ai/blog/a-guide-to-using-asyncio/
@@ -19,7 +19,7 @@ async def listen(event_queue: asyncio.Queue):
         await c.subscribe(sfdc.PEListenerClient.channel)
 
         async for message in c:
-            t = TenantCreateEvent(message['data']['payload'])
-            logging.info(f"SFDC Tenant Create Event Received - Self Service Entry Id: {t.ssentry_id} - tenant_id: {t.tenant_id}")
+            t = TenantEvent(message['data']['payload'])
+            logging.info(f"SFDC Tenant Event Received - type: {t.type} - SSEId: {t.ssentry_id} - tenant_id: {t.tenant_id}")
 
             await event_queue.put(t)
