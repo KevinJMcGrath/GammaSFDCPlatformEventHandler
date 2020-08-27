@@ -4,8 +4,9 @@ import requests
 import config
 
 def create_tenant(tenant_id: str=None):
-    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_deploy'
+    success = False
 
+    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_deploy'
     payload = {
         "secret": config.SymphonyTenantConfig['api_key'],
         "parameters": config.SymphonyTenantConfig['parameters']
@@ -17,16 +18,21 @@ def create_tenant(tenant_id: str=None):
     try:
         resp = requests.post(endpoint, data=payload)
 
-        if resp.status_code > 299:
+        if resp.status_code < 300:
+            success = True
+        else:
             resp.raise_for_status()
 
     except Exception as ex:
         logging.error(ex)
+    finally:
+        return success
 
 
 def destroy_tenant(tenant_id: str):
-    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_deploy'
+    success = False
 
+    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_deploy'
     payload = {
         "secret": config.SymphonyTenantConfig['api_key'],
         "parameters": config.SymphonyTenantConfig['parameters']
@@ -37,8 +43,12 @@ def destroy_tenant(tenant_id: str):
     try:
         resp = requests.post(endpoint, data=payload)
 
-        if resp.status_code > 299:
+        if resp.status_code < 300:
+            success = True
+        else:
             resp.raise_for_status()
 
     except Exception as ex:
         logging.error(ex)
+    finally:
+        return success

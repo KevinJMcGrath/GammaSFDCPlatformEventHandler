@@ -4,7 +4,7 @@ import logging
 import config
 
 
-async def heart_beat():
+async def emit_heartbeat_signal():
     while True:
         logging.info('heartbeat...')
         await asyncio.sleep(config.HeartbeatDelay)

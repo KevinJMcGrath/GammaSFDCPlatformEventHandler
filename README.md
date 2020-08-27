@@ -1,6 +1,16 @@
 # Gamma Tenant Manager
 
-## Process Flow
+## Installation
+TBD
+
+## Startup:
+On startup, an asyncio loop is created and the following tasks are gathered:
+* Heartbeat generator
+* Platform Event listener
+* Platform Event queue processor
+* Tenant build monitor
+
+## Processing
 
 ### Submission:
 1. SFDC emits a new Platform Event after Gamma Signup

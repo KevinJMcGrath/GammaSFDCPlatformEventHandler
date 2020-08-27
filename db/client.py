@@ -56,6 +56,9 @@ class MongoClient:
             }
         )
 
+    def insert_new_tenant(self, tenant_id: str):
+        self.insert_tenant_status(tenant_id)
+
     def insert_tenant_status(self, tenant_id: str, status: BuildStatus=BuildStatus.Pending):
         self.get_collection(self.tenant_id_collection_name).insert_one(
             {
