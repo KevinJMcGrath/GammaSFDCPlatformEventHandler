@@ -29,7 +29,7 @@ class MongoClient:
             if not db:
                 raise Exception('Mongo connection test failed.')
         except Exception as ex:
-            # logging.error(ex)
+            logging.error(ex)
 
             # If the database test fails, I want the script to bail out.
             raise ex

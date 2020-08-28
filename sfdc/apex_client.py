@@ -10,8 +10,14 @@ class SFClient:
 
     def init_client(self, sym_config):
         logging.debug('Initializing Salesforce API client...')
-        return Salesforce(username=sym_config['username'], password=sym_config['password'],
+        c = Salesforce(username=sym_config['username'], password=sym_config['password'],
                           security_token=sym_config['security_token'], domain=self.domain)
+
+        api_key = sym_config['custom_api_key']
+        c.headers['X-SYM-APIKEY'] = api_key
+
+        return c
+
 
     def rest_apex(self, rest_path: str, method: str='GET', payload=None):
         try:
