@@ -15,25 +15,13 @@ def create_tenant(tenant_id: str=None):
     if tenant_id:
         payload['parameters']['tenant'] = tenant_id
 
-    try:
-        resp = requests.post(endpoint, data=payload)
-
-        if resp.status_code < 300:
-            logging.debug(f"Spinnaker create request successful.")
-            success = True
-        else:
-            resp.raise_for_status()
-
-    except Exception as ex:
-        logging.error(ex)
-    finally:
-        return success
+    return spinnaker_callout(endpoint=endpoint, payload=payload)
 
 
 def destroy_tenant(tenant_id: str):
-    success = False
+    logging.debug('Submitting delete request to Spinnaker...')
 
-    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_deploy'
+    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_destroy'
     payload = {
         "secret": config.SymphonyTenantConfig['api_key'],
         "parameters": config.SymphonyTenantConfig['parameters']
@@ -41,16 +29,28 @@ def destroy_tenant(tenant_id: str):
 
     payload['parameters']['tenant'] = tenant_id
 
-    try:
-        resp = requests.post(endpoint, data=payload)
+    return spinnaker_callout(endpoint=endpoint, payload=payload)
 
-        if resp.status_code < 300:
-            logging.debug(f"Spinnaker delete request successful.")
-            success = True
-        else:
-            resp.raise_for_status()
 
-    except Exception as ex:
-        logging.error(ex)
-    finally:
-        return success
+def spinnaker_callout(endpoint: str, payload: dict) -> bool:
+    success = False
+    submit_enabled = config.SymphonyTenantConfig['submit_enabled']
+
+    if submit_enabled:
+        try:
+            resp = requests.post(endpoint, data=payload)
+
+            if resp.status_code < 300:
+                logging.debug(f"Spinnaker request successful.")
+                success = True
+            else:
+                resp.raise_for_status()
+
+        except Exception as ex:
+            logging.error(f'Spinnaker request failed. Error: {ex}')
+
+    else:
+        logging.info(f"Spinnaker submission disabled by configuration.")
+        success = True
+
+    return success

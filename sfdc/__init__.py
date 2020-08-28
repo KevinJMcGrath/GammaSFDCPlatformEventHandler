@@ -1,6 +1,5 @@
 import config
 
-
 from sfdc import api
 from sfdc.apex_client import SFClient
 from sfdc.events_client import EventsClient

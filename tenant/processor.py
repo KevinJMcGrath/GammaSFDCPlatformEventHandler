@@ -12,11 +12,11 @@ def create_tenant(tenant_event: tm.TenantEvent):
     db.create_new_tenant_entry(tenant_id=tenant_event.tenant_id, ssentry_id=tenant_event.ssentry_id)
 
     # Submit new tenant to Spinnaker
-    # success = api.create_tenant(tenant_event.tenant_id)
-    success = True
+    success = api.create_tenant(tenant_event.tenant_id)
+
 
     if success:
-        # Update database entry to InProgress
+        # Update database entry to in_progress
         db.update_tenant_in_progress(tenant_id=tenant_event.tenant_id)
         # POST update to Salesforce
         sfdc.report_status_in_progress(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
@@ -28,13 +28,21 @@ def create_tenant(tenant_event: tm.TenantEvent):
 
 def status_check(tenant_event: tm.TenantEvent):
     tenant_status_item = db.get_tenant_status(tenant_id=tenant_event.tenant_id)
+    ssentry_id = tenant_status_item['ssentry_id']
+    tenant_id = tenant_status_item['tenant_id']
+    status = tenant_status_item['status']
 
+    sfdc.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status=status)
 
 
 def delete_tenant(tenant_event: tm.TenantEvent):
-    # Delete tenant probably requires a monitoring queue too,
-    # the delete is not instantaneous and can potentially fail, which
-    # might cause a conflict
+    logging.info(f'Sunsetting tenant with tenant_id: {tenant_event.tenant_id}')
 
-    pass
+    success = api.destroy_tenant(tenant_event.tenant_id)
 
+    if success:
+        db.update_tenant_status(tenant_id=tenant_event.tenant_id, status='delete_in_progress')
+        sfdc.report_status(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id, status='delete_in_progress')
+    else:
+        db.update_tenant_failed(tenant_id=tenant_event.tenant_id)
+        sfdc.report_status_failed(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
