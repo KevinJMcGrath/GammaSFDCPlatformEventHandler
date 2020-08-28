@@ -2,8 +2,6 @@ import dns
 import logging
 import pymongo
 
-from db.utility import BuildStatus
-
 import config
 
 class MongoClient:
@@ -47,39 +45,50 @@ class MongoClient:
             }
         )
 
+    def get_tenant_status_by_ssentry_id(self, ssentry_id: str):
+        logging.debug(f"get_tenant_status_by_ssentry_id: {ssentry_id}")
+        return self.get_collection(self.tenant_id_collection_name).find(
+            {
+                "ssentry_id": {
+                    "$eq": ssentry_id
+                }
+            }
+        )
+
     def get_pending_tenants(self):
         logging.debug('get_pending_tenants')
         return self.get_collection(self.tenant_id_collection_name).find(
             {
                 "$or": [
-                    {"status": 'Pending'},
-                    {"status": 'InProgress'}
+                    {"status": 'submitted'},
+                    {"status": 'in_progress'}
                 ]
             }
         )
 
-    def insert_new_tenant(self, tenant_id: str):
+    def insert_new_tenant(self, tenant_id: str, ssentry_id: str):
         logging.debug(f"insert_new_tenant tenant_id: {tenant_id}")
-        self.insert_tenant_status(tenant_id)
+        self.insert_tenant_status(tenant_id=tenant_id, ssentry_id=ssentry_id, status='submitted')
 
-    def insert_tenant_status(self, tenant_id: str, status: BuildStatus=BuildStatus.Pending):
-        logging.debug(f"insert_tenant_status tenant_id: {tenant_id} - status: {status.name}")
+    def insert_tenant_status(self, tenant_id: str, ssentry_id: str, status: str):
+        logging.debug(f"insert_tenant_status tenant_id: {tenant_id} - ssentry_id: {ssentry_id} - status: {status}")
         self.get_collection(self.tenant_id_collection_name).insert_one(
             {
                 "tenant_id": tenant_id,
-                "status": status.name
+                "ssentry_id": ssentry_id,
+                "status": status
             }
         )
 
-    def update_tenant_status(self, tenant_id: str, status: BuildStatus):
-        logging.debug(f"update_tenant_status tenant_id: {tenant_id} - status: {status.name}")
+    def update_tenant_status(self, tenant_id: str, status: str):
+        logging.debug(f"update_tenant_status tenant_id: {tenant_id} - status: {status}")
         self.get_collection(self.tenant_id_collection_name).find_one_and_update(
             {
                 "tenant_id": tenant_id
             },
             {
                 "$set": {
-                    "status": status.name
+                    "status": status
                 }
             }
         )
