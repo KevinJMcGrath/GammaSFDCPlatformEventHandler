@@ -23,13 +23,16 @@ class MongoClient:
 
     def test_conn(self):
         try:
-            logging.info('Testing Mongo Atlas connection...')
+            # logging.debug('Testing Mongo Atlas connection...')
             db = self.client.test
 
             if not db:
                 raise Exception('Mongo connection test failed.')
         except Exception as ex:
-            logging.error(ex)
+            # logging.error(ex)
+
+            # If the database test fails, I want the script to bail out.
+            raise ex
 
     def get_collection(self, collection_name: str):
         db = self.client.get_database(self.database_name)

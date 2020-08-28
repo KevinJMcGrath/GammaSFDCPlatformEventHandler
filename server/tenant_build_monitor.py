@@ -3,6 +3,6 @@
 
 import asyncio
 
-async def monitor_builds():
+async def monitor_tenants():
     while True:
         await asyncio.sleep(1)

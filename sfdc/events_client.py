@@ -1,3 +1,4 @@
+import logging
 
 # https://aiosfstream.readthedocs.io/en/latest/quickstart.html
 from aiosfstream import SalesforceStreamingClient
@@ -18,6 +19,7 @@ class EventsClient:
     # Endpoint: /services/data/v48.0/sobjects/Tenant_Event__e
     # https://developer.salesforce.com/docs/atlas.en-us.226.0.platform_events.meta/platform_events/platform_events_publish_api.htm
     def init_client(self):
+        logging.debug('Initializing Platform Event Listener...')
         return SalesforceStreamingClient(consumer_key=self.client_key, consumer_secret=self.client_secret,
                                     username=self.username, password=self.password + self.security_token,
                                     sandbox=self.sandbox)

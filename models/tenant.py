@@ -10,6 +10,7 @@ class TenantEvent:
         self.tenant_id: str = event_message.get('Tenant_Id__c', '')
         self.ssentry_id: str = event_message['SSEntry_Id__c']
         self.type: str = event_message['Event_Type__c']
+        self.auth_code: str = event_message['Event_Auth_Code__c']
 
 
 # class TenantCreateEvent(TenantEvent):

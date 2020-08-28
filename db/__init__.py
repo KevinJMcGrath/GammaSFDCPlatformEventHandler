@@ -2,6 +2,7 @@ from db.client import MongoClient
 
 
 DBClient = MongoClient.from_config()
+DBClient.test_conn()
 
 
 def create_new_tenant_entry(tenant_id: str, ssentry_id: str):

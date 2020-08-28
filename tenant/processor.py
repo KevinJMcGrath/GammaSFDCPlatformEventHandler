@@ -46,3 +46,13 @@ def delete_tenant(tenant_event: tm.TenantEvent):
     else:
         db.update_tenant_failed(tenant_id=tenant_event.tenant_id)
         sfdc.report_status_failed(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
+
+
+def reject_event(tenant_event: tm.TenantEvent, reason: str):
+    err_msg = 'unknown'
+    if reason == 'invalid_event_auth':
+        err_msg = "invalid platform event authorization code."
+    elif reason == 'invalid_event_type':
+        err_msg = f"invalid platform event type: {tenant_event.type} - tenant_id: {tenant_event.tenant_id}"
+
+    logging.error(f"Event rejected. Reason: {err_msg}")

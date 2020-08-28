@@ -14,7 +14,7 @@ class LogFilter(logging.Filter):
 
 
 # Define the root logging instance
-root_logger = logging.getLogger('')
+root_logger = logging.getLogger()
 
 if config.LogVerbose:
     print(f'Verbose logging is on.')
@@ -23,21 +23,33 @@ else:
     print(f'Verbose logging is off.')
     root_logger.setLevel(logging.INFO)
 
+
+
 # Log Formatting
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s')
 formatter.datefmt = '%m/%d %H:%M:%S'
+
+
 
 def initialize_logging():
     def set_handler_type(stream=sys.stdout):
         return logging.StreamHandler(stream)
 
+    # Somewhere I managed to add a call to a logging statement that gets run before I initialize the
+    # logging system. When that happens, I need to make sure I purge the old default handler or
+    # I'll get double entries.
+    if root_logger.hasHandlers():
+        print('Removing default handler...')
+        h = root_logger.handlers[0]
+        root_logger.removeHandler(h)
+
 
     # Define the logging handlers
     if config.LogVerbose:
-        console_handler = set_handler_type()
-        console_handler.setLevel(logging.INFO)
-        console_handler.setFormatter(logging.Formatter('%(message)s'))
-        console_handler.addFilter(LogFilter(logging.INFO))
+        # console_handler = set_handler_type()
+        # console_handler.setLevel(logging.INFO)
+        # console_handler.setFormatter(logging.Formatter('%(message)s'))
+        # console_handler.addFilter(LogFilter(logging.INFO))
         #root_logger.addHandler(console_handler)
 
         debug_handler = set_handler_type()

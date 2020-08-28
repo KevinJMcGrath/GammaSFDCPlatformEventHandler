@@ -13,7 +13,7 @@ async def gather_coroutines():
         heartbeat.emit_heartbeat_signal(),
         pel.listen(platform_event_queue),
         peq.process_events(platform_event_queue),
-        tbm.monitor_builds()
+        tbm.monitor_tenants()
     )
 
 def start_server():
