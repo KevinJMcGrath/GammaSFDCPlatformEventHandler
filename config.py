@@ -6,9 +6,9 @@ from pathlib import Path
 deploy_type = os.environ.get('DEPLOY_TYPE')
 
 if deploy_type == 'prod':
-    config_path = '/etc/public_housekeeper/bot_config/config.json'
+    config_path = '/etc/gamma-tenant-manager/config/config.json'
 else:
-    config_path = Path("./config.json")
+    config_path = Path("config/config.json")
 
 with open(config_path, 'r') as _config_file:
     _config = jsonpickle.decode(_config_file.read())

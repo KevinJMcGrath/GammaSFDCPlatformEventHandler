@@ -56,3 +56,6 @@ def reject_event(tenant_event: tm.TenantEvent, reason: str):
         err_msg = f"invalid platform event type: {tenant_event.type} - tenant_id: {tenant_event.tenant_id}"
 
     logging.error(f"Event rejected. Reason: {err_msg}")
+
+def send_proof_of_life(tenant_event: tm.TenantEvent):
+    sfdc.report_status(ssentry_id="-1", tenant_id="-1", status='system_check')
