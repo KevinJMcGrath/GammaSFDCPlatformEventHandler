@@ -4,12 +4,13 @@ from sfdc import api
 from sfdc.apex_client import SFClient
 from sfdc.events_client import EventsClient
 
-
+print('Starting Events Client')
 PEListenerClient = EventsClient(config.SFDCPlatformConfig)
+print('Starting SFDC Client')
 SalesforceClient = SFClient(config.SFDCPlatformConfig)
 
-def report_status(ssentry_id: str, tenant_id: str, status: str):
-    api.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status=status)
+def report_status(ssentry_id: str, tenant_id: str, status: str, message: str=None):
+    api.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status=status, message=message)
 
 def report_status_pending(ssentry_id: str, tenant_id: str):
     api.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status='submitted')

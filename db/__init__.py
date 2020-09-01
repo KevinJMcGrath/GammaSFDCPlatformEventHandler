@@ -1,3 +1,5 @@
+import db.utility as utility
+
 from db.client import MongoClient
 
 
@@ -22,3 +24,6 @@ def update_tenant_complete(tenant_id: str):
 
 def get_tenant_status(tenant_id: str):
     return DBClient.get_tenant_status(tenant_id=tenant_id)
+
+def get_pending_tenants():
+    return DBClient.get_pending_tenants()

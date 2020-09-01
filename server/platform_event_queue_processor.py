@@ -20,6 +20,8 @@ async def process_events(async_queue: asyncio.Queue):
                 processor.delete_tenant(tenant_event)
             elif tenant_event.type == 'system_check':
                 processor.send_proof_of_life(tenant_event)
+            elif tenant_event.type == 'list_pending':
+                processor.event_type_not_implemented(tenant_event)
             else:
                 processor.reject_event(tenant_event, reason="invalid_event_type")
         else:

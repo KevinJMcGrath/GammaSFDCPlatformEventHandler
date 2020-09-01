@@ -2,12 +2,13 @@ import logging
 
 import sfdc
 
-def report_status(ssentry_id: str, tenant_id: str, status: str):
+def report_status(ssentry_id: str, tenant_id: str, status: str, message: str=None):
     rest_path = 'symphony/sse-status'
     payload = {
         "ssentry_id": ssentry_id,
         "tenant_id": tenant_id,
-        "status": status
+        "status": status,
+        "message": message
     }
 
     logging.debug(f"Sending status update to SFDC. SSEntryId: {ssentry_id} - status: {status}")
