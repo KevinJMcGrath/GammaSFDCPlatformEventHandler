@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from server import heartbeat
 from server import platform_event_listener as pel
@@ -17,5 +18,7 @@ async def gather_coroutines():
     )
 
 def start_server():
+    logging.info('Starting event loop...')
     loop = asyncio.get_event_loop()
+    logging.info('Initiating async processes...')
     loop.run_until_complete(gather_coroutines())

@@ -1,6 +1,8 @@
 import dns
 import logging
 import pymongo
+import bson
+
 
 import config
 
@@ -59,7 +61,6 @@ class MongoClient:
         )
 
     def get_pending_tenants(self):
-        logging.debug('get_pending_tenants')
         return self.get_collection(self.tenant_id_collection_name).find(
             {
                 "$or": [
@@ -88,6 +89,19 @@ class MongoClient:
         self.get_collection(self.tenant_id_collection_name).find_one_and_update(
             {
                 "tenant_id": tenant_id
+            },
+            {
+                "$set": {
+                    "status": status
+                }
+            }
+        )
+
+    def update_tenant_status_by_id(self, db_id, status: str):
+        logging.debug(f"update_tenant_status _id: {db_id} - status: {status}")
+        self.get_collection(self.tenant_id_collection_name).update_one(
+            {
+                "_id": bson.ObjectId(db_id)
             },
             {
                 "$set": {

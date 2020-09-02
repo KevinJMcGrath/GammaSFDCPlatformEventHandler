@@ -28,11 +28,13 @@ def create_tenant(tenant_event: tm.TenantEvent):
 
 def status_check(tenant_event: tm.TenantEvent):
     tenant_status_item = db.get_tenant_status(tenant_id=tenant_event.tenant_id)
-    ssentry_id = tenant_status_item['ssentry_id']
-    tenant_id = tenant_status_item['tenant_id']
-    status = tenant_status_item['status']
 
-    sfdc.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status=status)
+    if tenant_status_item:
+        ssentry_id = tenant_status_item['ssentry_id']
+        tenant_id = tenant_status_item['tenant_id']
+        status = tenant_status_item['status']
+
+        sfdc.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status=status)
 
 
 def delete_tenant(tenant_event: tm.TenantEvent):

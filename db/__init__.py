@@ -13,6 +13,9 @@ def create_new_tenant_entry(tenant_id: str, ssentry_id: str):
 def update_tenant_status(tenant_id: str, status: str):
     DBClient.update_tenant_status(tenant_id=tenant_id, status=status)
 
+def update_tenant_status_by_id(db_id, status: str):
+    DBClient.update_tenant_status_by_id(db_id=db_id, status=status)
+
 def update_tenant_in_progress(tenant_id: str):
     DBClient.update_tenant_status(tenant_id=tenant_id, status='in_progress')
 
