@@ -9,5 +9,8 @@ docker push kevinmcgrath/gamma-tenant-manager:latest
 docker push kevinmcgrath/gamma-tenant-manager:0.1.6
 
 # On the VM:
+# Update the config.json if changes were made
+#
+# docker image pull kevinmcgrath/gamma-tenant-manager:latest
 # docker-compose up -d --build gamma-tenant
  #>
