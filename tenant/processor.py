@@ -1,5 +1,6 @@
 import logging
 
+import config
 import db
 import sfdc
 
@@ -61,7 +62,7 @@ def reject_event(tenant_event: tm.TenantEvent, reason: str):
 
 
 def send_proof_of_life(tenant_event: tm.TenantEvent):
-    sfdc.report_status(ssentry_id="-1", tenant_id="-1", status='system_check')
+    sfdc.report_status(ssentry_id=config.AppVersion, tenant_id="-1", status='system_check')
 
 
 def event_type_not_implemented(tenant_event: tm.TenantEvent):

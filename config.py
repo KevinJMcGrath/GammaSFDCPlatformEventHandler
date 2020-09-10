@@ -20,3 +20,4 @@ DatabaseConfig = _config['databse']
 
 
 LogVerbose = _config['log_verbose']
+AppVersion = _config['app_version']
