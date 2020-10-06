@@ -24,5 +24,6 @@ async def monitor_tenants():
 
             if created_datetime + timedelta(minutes=2) <= curr_dt:
                 logging.info(f'Tenant is complete - notifying Salesforce. SSEntry_Id: {ssentry_id}')
+                db.update_tenant_status_by_id(db_id=db_id, status='complete')
+
                 sfdc.report_status_complete(ssentry_id=ssentry_id)
-                db.update_tenant_complete(ssentry_id=ssentry_id)
