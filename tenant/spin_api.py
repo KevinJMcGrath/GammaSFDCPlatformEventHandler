@@ -50,7 +50,7 @@ def spinnaker_callout(endpoint: str, payload: dict) -> (bool, str):
 
     if submit_enabled:
         try:
-            resp = requests.post(endpoint, data=payload)
+            resp = requests.post(endpoint, json=payload)
 
             if resp.status_code < 300:
                 logging.debug(f"Spinnaker request successful.")
@@ -58,7 +58,10 @@ def spinnaker_callout(endpoint: str, payload: dict) -> (bool, str):
                 event_id = resp.json()['eventId']
             else:
                 resp.raise_for_status()
-
+        except requests.exceptions.HTTPError as http_ex:
+            logging.error('Spinnaker HTTP Error')
+            logging.exception(http_ex)
+            logging.error(http_ex.response.text)
         except Exception as ex:
             logging.error(f'Spinnaker request failed. Error: {ex}')
 

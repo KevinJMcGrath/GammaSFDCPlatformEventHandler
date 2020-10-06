@@ -20,11 +20,11 @@ def create_tenant(tenant_event: tm.TenantEvent):
         db.update_tenant_in_progress(ssentry_id=tenant_event.ssentry_id)
         db.update_tenant_mt_event_id(ssentry_id=tenant_event.ssentry_id, mt_event_id=event_id)
         # POST update to Salesforce
-        sfdc.report_status_in_progress(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
+        sfdc.report_status_in_progress(tenant_event)
 
     else:
         db.update_tenant_failed(ssentry_id=tenant_event.ssentry_id)
-        sfdc.report_status_failed(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
+        sfdc.report_status_failed(tenant_event)
 
 
 def status_check(tenant_event: tm.TenantEvent):
@@ -32,10 +32,10 @@ def status_check(tenant_event: tm.TenantEvent):
 
     if tenant_status_item:
         ssentry_id = tenant_status_item['ssentry_id']
-        tenant_id = tenant_status_item['tenant_id']
+        # tenant_id = tenant_status_item['tenant_id']
         status = tenant_status_item['status']
 
-        sfdc.report_status(ssentry_id=ssentry_id, tenant_id=tenant_id, status=status)
+        sfdc.report_status(ssentry_id=ssentry_id, status=status)
 
 
 def delete_tenant(tenant_event: tm.TenantEvent):
@@ -45,10 +45,10 @@ def delete_tenant(tenant_event: tm.TenantEvent):
 
     if success:
         db.update_tenant_status(ssentry_id=tenant_event.ssentry_id, status='delete_in_progress')
-        sfdc.report_status(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id, status='delete_in_progress')
+        # sfdc.report_status(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id, status='delete_in_progress')
     else:
         db.update_tenant_failed(ssentry_id=tenant_event.ssentry_id)
-        sfdc.report_status_failed(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
+        # sfdc.report_status_failed(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
 
 
 def reject_event(tenant_event: tm.TenantEvent, reason: str):
@@ -62,8 +62,8 @@ def reject_event(tenant_event: tm.TenantEvent, reason: str):
 
 
 def send_proof_of_life():
-    sfdc.report_status(ssentry_id=config.AppVersion, tenant_id="-1", status='system_check')
+    sfdc.report_status_proof_of_life(app_version_id=config.AppVersion)
 
 
 def event_type_not_implemented(tenant_event: tm.TenantEvent):
-    sfdc.report_status(ssentry_id="-1", tenant_id="-1", status='event_not_implemented', message=f'{tenant_event.type}')
+    sfdc.report_status(ssentry_id="-1", status='event_not_implemented', message=f'{tenant_event.type}')
