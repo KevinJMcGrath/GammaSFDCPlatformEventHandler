@@ -5,6 +5,7 @@ from server import heartbeat
 from server import platform_event_listener as pel
 from server import platform_event_queue_processor as peq
 from server import tenant_build_monitor as tbm
+from server import sym_completion_monitor as scm
 
 
 platform_event_queue = asyncio.Queue()
@@ -14,7 +15,8 @@ async def gather_coroutines():
         heartbeat.emit_heartbeat_signal(),
         pel.listen(platform_event_queue),
         peq.process_events(platform_event_queue),
-        tbm.monitor_tenants()
+        tbm.monitor_tenants(),
+        scm.monitor_tenant_symphony_stream()
     )
 
 def start_server():

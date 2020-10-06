@@ -3,25 +3,36 @@ import requests
 
 import config
 
-def create_tenant(tenant_id: str=None):
-    success = False
+from models import tenant as tm
 
-    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_deploy'
-    payload = {
-        "secret": config.SymphonyTenantConfig['api_key'],
-        "parameters": config.SymphonyTenantConfig['parameters']
-    }
+def create_tenant(tenant_event: tm.TenantEvent) -> (bool, str):
+    try:
+        endpoint = config.SymphonyTenantConfig['base_url'] + config.SymphonyTenantConfig['create_tenant_endpoint']
+        payload = {
+            "secret": config.SymphonyTenantConfig['api_key'],
+            "parameters": config.SymphonyTenantConfig['parameters']
+        }
 
-    if tenant_id:
-        payload['parameters']['tenant'] = tenant_id
+        # if tenant_id:
+        #     payload['parameters']['tenant'] = tenant_id
 
-    return spinnaker_callout(endpoint=endpoint, payload=payload)
+        payload['parameters']['tenant_name'] = tenant_event.company_name
+        payload['parameters']['tenant_admin_email'] = tenant_event.email
+        payload['parameters']['tenant_admin_first'] = tenant_event.firstname
+        payload['parameters']['tenant_admin_last'] = tenant_event.lastname
+
+        return spinnaker_callout(endpoint=endpoint, payload=payload)
+
+    except KeyError as ex_key:
+        logging.error('Missing parameter from event payload. ')
+        logging.exception(ex_key)
+        return False, ''
 
 
 def destroy_tenant(tenant_id: str):
     logging.debug('Submitting delete request to Spinnaker...')
 
-    endpoint = config.SymphonyTenantConfig['base_url'] + 'qa_tenant_destroy'
+    endpoint = config.SymphonyTenantConfig['base_url'] + config.SymphonyTenantConfig['destroy_tenant_endpoint']
     payload = {
         "secret": config.SymphonyTenantConfig['api_key'],
         "parameters": config.SymphonyTenantConfig['parameters']
@@ -32,8 +43,9 @@ def destroy_tenant(tenant_id: str):
     return spinnaker_callout(endpoint=endpoint, payload=payload)
 
 
-def spinnaker_callout(endpoint: str, payload: dict) -> bool:
+def spinnaker_callout(endpoint: str, payload: dict) -> (bool, str):
     success = False
+    event_id = ''
     submit_enabled = config.SymphonyTenantConfig['submit_enabled']
 
     if submit_enabled:
@@ -43,6 +55,7 @@ def spinnaker_callout(endpoint: str, payload: dict) -> bool:
             if resp.status_code < 300:
                 logging.debug(f"Spinnaker request successful.")
                 success = True
+                event_id = resp.json()['eventId']
             else:
                 resp.raise_for_status()
 
@@ -53,4 +66,4 @@ def spinnaker_callout(endpoint: str, payload: dict) -> bool:
         logging.info(f"Spinnaker submission disabled by configuration.")
         success = True
 
-    return success
+    return success, event_id

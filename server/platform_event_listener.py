@@ -20,6 +20,6 @@ async def listen(event_queue: asyncio.Queue):
 
         async for message in c:
             t = TenantEvent(message['data']['payload'])
-            logging.info(f"SFDC Tenant Event Received - type: {t.type} - SSEId: {t.ssentry_id} - tenant_id: {t.tenant_id}")
+            logging.info(f"SFDC Tenant Event Received - type: {t.type}")
 
             await event_queue.put(t)

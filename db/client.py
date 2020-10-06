@@ -40,12 +40,22 @@ class MongoClient:
         db = self.client.get_database(self.database_name)
         return db.get_collection(self.tenant_id_collection_name)
 
-    def get_tenant_status(self, tenant_id: str):
+    def get_tenant_status_by_tenant_id(self, tenant_id: str):
         logging.debug(f"get_tenant_status tenant_id: {tenant_id}")
         return self.get_collection(self.tenant_id_collection_name).find_one(
             {
                 "tenant_id": {
                     "$eq": tenant_id
+                }
+            }
+        )
+
+    def get_tenant_status_by_mt_event_id(self, mt_event_id: str):
+        logging.debug(f"get_tenant_status mt_event_id: {mt_event_id}")
+        return self.get_collection(self.tenant_id_collection_name).find_one(
+            {
+                "mt_event_id": {
+                    "$eq": mt_event_id
                 }
             }
         )
@@ -70,25 +80,40 @@ class MongoClient:
             }
         )
 
-    def insert_new_tenant(self, tenant_id: str, ssentry_id: str):
-        logging.debug(f"insert_new_tenant tenant_id: {tenant_id}")
-        self.insert_tenant_status(tenant_id=tenant_id, ssentry_id=ssentry_id, status='submitted')
+    def insert_new_tenant(self, ssentry_id: str, tenant_id: str=None, mt_event_id: str=None):
+        logging.debug(f"insert_new_tenant ssentry_id: {ssentry_id}")
+        self.insert_tenant_status(tenant_id=tenant_id, ssentry_id=ssentry_id, status='submitted',
+                                  mt_event_id=mt_event_id)
 
-    def insert_tenant_status(self, tenant_id: str, ssentry_id: str, status: str):
+    def insert_tenant_status(self, tenant_id: str, ssentry_id: str, status: str, mt_event_id: str=None):
         logging.debug(f"insert_tenant_status tenant_id: {tenant_id} - ssentry_id: {ssentry_id} - status: {status}")
         self.get_collection(self.tenant_id_collection_name).insert_one(
             {
                 "tenant_id": tenant_id,
                 "ssentry_id": ssentry_id,
-                "status": status
+                "status": status,
+                "mt_event_id": mt_event_id
             }
         )
 
-    def update_tenant_status(self, tenant_id: str, status: str):
+    def update_tenant_status_by_tenant_id(self, tenant_id: str, status: str):
         logging.debug(f"update_tenant_status tenant_id: {tenant_id} - status: {status}")
         self.get_collection(self.tenant_id_collection_name).find_one_and_update(
             {
                 "tenant_id": tenant_id
+            },
+            {
+                "$set": {
+                    "status": status
+                }
+            }
+        )
+
+    def update_tenant_status_by_ssentry_id(self, ssentry_id: str, status: str):
+        logging.debug(f"update_tenant_status tenant_id: {ssentry_id} - status: {status}")
+        self.get_collection(self.tenant_id_collection_name).find_one_and_update(
+            {
+                "ssentry_id": ssentry_id
             },
             {
                 "$set": {
@@ -110,5 +135,21 @@ class MongoClient:
             }
         )
 
-    def delete_tenant_status(self, tenant_id: str):
+    def update_tenant_event_id_by_ssentry_id(self, ssentry_id: str, mt_event_id: str):
+        logging.debug(f"update_tenant_event_id_by_ssentry_id ssentry_id: {ssentry_id} - mt_event_id: {mt_event_id}")
+        self.get_collection(self.tenant_id_collection_name).update_one(
+            {
+                "ssentry_id": ssentry_id
+            },
+            {
+                "$set": {
+                    "mt_event_id": mt_event_id
+                }
+            }
+        )
+
+    def delete_tenant_status_by_tenant_id(self, tenant_id: str):
         self.get_collection(self.tenant_id_collection_name).delete_one({"tenant_id": tenant_id})
+
+    def delete_tenant_status_by_ssentry_id(self, ssentry_id: str):
+        self.get_collection(self.tenant_id_collection_name).delete_one({"ssentry_id": ssentry_id})
