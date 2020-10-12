@@ -31,6 +31,7 @@ MANIFEST
 
 # config
 config/config.json
+config/docker-compose.yml
 config.*.json
 
 # Secrets
