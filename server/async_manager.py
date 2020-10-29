@@ -4,7 +4,7 @@ import logging
 from server import heartbeat
 from server import platform_event_listener as pel
 from server import platform_event_queue_processor as peq
-from server import tenant_build_monitor as tbm
+# from server import tenant_build_monitor as tbm
 from server import sym_completion_monitor as scm
 
 

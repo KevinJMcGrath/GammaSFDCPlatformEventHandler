@@ -1,6 +1,5 @@
 import logging
 
-from datetime import datetime
 from jira import JIRA
 
 import config
@@ -8,20 +7,29 @@ import db
 import sfdc
 
 def finalize(tenant_id: str, admin_email: str, password: str):
-    logging.info(f"Tenant ({tenant_id} complete!")
+    if config.SymphonyTenantConfig['finalize_enabled']:
 
-    tenant = db.get_tenant_by_admin_email(admin_email)
-    db_id = tenant['_id']
-    ssentry_id = tenant['ssentry_id']
+        logging.info(f"Tenant {tenant_id} complete!")
+        tenant = db.get_tenant_by_admin_email(admin_email)
 
-    db.update_tenant_status_by_id(db_id=db_id, status='complete')
+        if tenant:
+            db_id = tenant['_id']
+            db.update_tenant_status_by_id(db_id=db_id, status='complete')
 
-    soql = f"SELECT Id, Account__c, POD__c, Symphony_URL__c FROM Self_Service_Entry__c WHERE Id = '{ssentry_id}' LIMIT 1"
-    ssentry = sfdc.SalesforceClient.client.query(soql)['records'][0]
+            ssentry_id = tenant['ssentry_id']
 
-    log_jiras(tenant, ssentry, tenant_id, admin_email, password)
+            soql = f"SELECT Id, Account__c, POD__c FROM Self_Service_Entry__c WHERE Id = '{ssentry_id}' LIMIT 1"
+            ssentry = sfdc.SalesforceClient.client.query(soql)['records'][0]
 
-    sfdc.report_status_complete(ssentry_id=ssentry_id)
+            log_jiras(tenant, ssentry, tenant_id, admin_email, password)
+
+            sfdc.report_status_complete(ssentry_id=ssentry_id)
+        else:
+            details = f"{tenant_id}, {admin_email}, {password}"
+            sfdc.report_generic_error('Unable to retrieve in-progress tenant from database.', details)
+
+    else:
+        logging.info('Finalize tenant skipped. Finalize disabled in config.')
 
 
 def log_jiras(db_tenant, ssentry, tenant_id: str, admin_email: str, password: str):

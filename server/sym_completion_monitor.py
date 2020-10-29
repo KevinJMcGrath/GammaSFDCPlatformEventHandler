@@ -1,6 +1,8 @@
 import asyncio
-from bs4 import BeautifulSoup
 import logging
+import lxml
+
+from bs4 import BeautifulSoup
 
 import bot
 import config
@@ -59,7 +61,7 @@ def parse_message(msg):
     if not msg:
         return None
 
-    soup = BeautifulSoup(msg)
+    soup = BeautifulSoup(msg, 'lxml')
 
     is_new_tenant = False
     for tag in soup.find_all('span'):

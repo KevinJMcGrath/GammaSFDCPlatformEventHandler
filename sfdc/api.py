@@ -31,3 +31,15 @@ def report_error(ssentry_id: str, err_msg: str):
 
     logging.debug(f"Sending error to SFDC. SSEntryId: {ssentry_id} - error: {err_msg}")
     sfdc.SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)
+
+
+def report_generic_error(err_message: str, details: str):
+    rest_path = 'symphony/sse-error'
+    payload = {
+        "error_message": err_message,
+        "details": details,
+        "source": "Monitoring Station"
+    }
+
+    logging.debug(f"Sending error to SFDC - error: {err_message} - details: {details}")
+    sfdc.SalesforceClient.rest_apex(rest_path=rest_path, method='POST', payload=payload)

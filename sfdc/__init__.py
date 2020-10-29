@@ -36,7 +36,8 @@ def report_status(ssentry_id: str, status: str, message: str=None):
     api.report_status(ssentry_id=ssentry_id, status=status, message=message)
 
 def report_status_complete(ssentry_id: str):
-    if config.SymphonyTenantConfig['finalize_enabled']:
-        api.report_status(ssentry_id=ssentry_id, status='complete')
-    else:
-        logging.info('Finalize tenant skipped. Finalize disabled in config.')
+    api.report_status(ssentry_id=ssentry_id, status='complete')
+
+
+def report_generic_error(error_message: str, details: str=None):
+    api.report_generic_error(error_message, details)
