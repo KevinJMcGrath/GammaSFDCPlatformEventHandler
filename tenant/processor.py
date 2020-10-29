@@ -10,25 +10,24 @@ from tenant import spin_api as api
 def create_tenant(tenant_event: tm.TenantEvent):
     logging.info(f'Creating new tenant with ssentry_id: {tenant_event.ssentry_id}')
     # Create new database entry for the inbound tenant
-    db.create_new_tenant_entry(ssentry_id=tenant_event.ssentry_id)
+    db.create_new_tenant_entry(tenant_event)
 
     # Submit new tenant to Spinnaker
     success, event_id = api.create_tenant(tenant_event)
 
     if success:
         # Update database entry to in_progress
-        db.update_tenant_in_progress(ssentry_id=tenant_event.ssentry_id)
-        db.update_tenant_mt_event_id(ssentry_id=tenant_event.ssentry_id, mt_event_id=event_id)
+        db.update_tenant_in_progress(tenant_event)
         # POST update to Salesforce
         sfdc.report_status_in_progress(tenant_event)
 
     else:
-        db.update_tenant_failed(ssentry_id=tenant_event.ssentry_id)
+        db.update_tenant_failed(tenant_event)
         sfdc.report_status_failed(tenant_event)
 
 
 def status_check(tenant_event: tm.TenantEvent):
-    tenant_status_item = db.get_tenant_status(ssentry_id=tenant_event.ssentry_id)
+    tenant_status_item = db.get_tenant_status(tenant_event)
 
     if tenant_status_item:
         ssentry_id = tenant_status_item['ssentry_id']
@@ -44,10 +43,10 @@ def delete_tenant(tenant_event: tm.TenantEvent):
     success = api.destroy_tenant(tenant_event.tenant_id)
 
     if success:
-        db.update_tenant_status(ssentry_id=tenant_event.ssentry_id, status='delete_in_progress')
+        db.update_tenant_status(tenant_event, status='delete_in_progress')
         # sfdc.report_status(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id, status='delete_in_progress')
     else:
-        db.update_tenant_failed(ssentry_id=tenant_event.ssentry_id)
+        db.update_tenant_failed(tenant_event)
         # sfdc.report_status_failed(ssentry_id=tenant_event.ssentry_id, tenant_id=tenant_event.tenant_id)
 
 

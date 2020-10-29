@@ -35,9 +35,11 @@ config/docker-compose.yml
 config.*.json
 
 # Secrets
+keys/
 *.pem
 *.crt
 *.pkcs8
+
 
 # Logging
 log/

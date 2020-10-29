@@ -62,10 +62,20 @@ class MongoClient:
 
     def get_tenant_status_by_ssentry_id(self, ssentry_id: str):
         logging.debug(f"get_tenant_status_by_ssentry_id: {ssentry_id}")
-        return self.get_collection(self.tenant_id_collection_name).find(
+        return self.get_collection(self.tenant_id_collection_name).find_one(
             {
                 "ssentry_id": {
                     "$eq": ssentry_id
+                }
+            }
+        )
+
+    def get_tenant_status_by_admin_email(self, admin_email: str):
+        logging.debug(f"get_tenant_status_by_admin_email: {admin_email}")
+        return self.get_collection(self.tenant_id_collection_name).find_one(
+            {
+                "admin_email": {
+                    "$eq": admin_email
                 }
             }
         )
@@ -80,19 +90,28 @@ class MongoClient:
             }
         )
 
-    def insert_new_tenant(self, ssentry_id: str, tenant_id: str=None, mt_event_id: str=None):
-        logging.debug(f"insert_new_tenant ssentry_id: {ssentry_id}")
-        self.insert_tenant_status(tenant_id=tenant_id, ssentry_id=ssentry_id, status='submitted',
-                                  mt_event_id=mt_event_id)
+    def insert_new_tenant(self, ssentry_id: str, tenant_id: str=None, mt_event_id: str=None, admin_email: str=None,
+                          company_name: str=None, admin_fname: str=None, admin_lname: str=None):
 
-    def insert_tenant_status(self, tenant_id: str, ssentry_id: str, status: str, mt_event_id: str=None):
-        logging.debug(f"insert_tenant_status tenant_id: {tenant_id} - ssentry_id: {ssentry_id} - status: {status}")
+        logging.debug(f"insert_new_tenant ssentry_id: {ssentry_id}")
+
+        self.insert_tenant_status(tenant_id=tenant_id, ssentry_id=ssentry_id, status='submitted',
+                                  mt_event_id=mt_event_id, admin_email=admin_email, company_name=company_name,
+                                  admin_fname=admin_fname, admin_lname=admin_lname)
+
+    def insert_tenant_status(self, tenant_id: str, ssentry_id: str, status: str, mt_event_id: str=None,
+                             admin_email: str=None, company_name: str=None, admin_fname: str=None, admin_lname: str=None):
+        logging.debug(f"insert_tenant_status admin_email: {admin_email} - ssentry_id: {ssentry_id} - status: {status}")
         self.get_collection(self.tenant_id_collection_name).insert_one(
             {
                 "tenant_id": tenant_id,
                 "ssentry_id": ssentry_id,
                 "status": status,
-                "mt_event_id": mt_event_id
+                "mt_event_id": mt_event_id,
+                "admin_email": admin_email,
+                "company_name": company_name,
+                "firstname": admin_fname,
+                "lastname": admin_lname
             }
         )
 

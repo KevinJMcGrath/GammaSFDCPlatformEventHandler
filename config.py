@@ -17,6 +17,8 @@ HeartbeatDelay = _config['heartbeat_delay']
 SFDCPlatformConfig = _config['sfdc_platform']
 SymphonyTenantConfig = _config['sym_tenant']
 DatabaseConfig = _config['databse']
+BotConfig = _config['bot']
+JIRAConfig = _config['jira']
 
 
 LogVerbose = _config['log_verbose']

@@ -15,7 +15,7 @@ async def gather_coroutines():
         heartbeat.emit_heartbeat_signal(),
         pel.listen(platform_event_queue),
         peq.process_events(platform_event_queue),
-        tbm.monitor_tenants(),
+        # tbm.monitor_tenants(),
         scm.monitor_tenant_symphony_stream()
     )
 
