@@ -76,7 +76,7 @@ class AuthClient:
 def get_auth_token(endpoint: str, jwt_encoded):
     try:
         payload = {
-            "token": jwt_encoded.decode('utf-8')
+            "token": jwt_encoded
         }
 
         response = requests.post(endpoint, json=payload)

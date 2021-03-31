@@ -19,6 +19,7 @@ SymphonyTenantConfig = _config['sym_tenant']
 DatabaseConfig = _config['databse']
 BotConfig = _config['bot']
 JIRAConfig = _config['jira']
+ZendeskConfig = _config['zendesk']
 
 
 LogVerbose = _config['log_verbose']

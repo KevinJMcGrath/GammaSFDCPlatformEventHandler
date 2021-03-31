@@ -16,7 +16,9 @@ async def gather_coroutines():
         pel.listen(platform_event_queue),
         peq.process_events(platform_event_queue),
         # tbm.monitor_tenants(),
-        scm.monitor_tenant_symphony_stream()
+
+        # TODO: Enable this when Spinnaker is properly setup to automate Edwin
+        # scm.monitor_tenant_symphony_stream()
     )
 
 def start_server():
